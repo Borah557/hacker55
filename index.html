@@ -1,0 +1,423 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram ID Hacking Simulator (Educational)</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            position: relative;
+        }
+        #digital-rain {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            opacity: 0.4;
+        }
+        #terminal {
+            background-color: rgba(10, 10, 10, 0.95);
+            padding: 2vw;
+            border: 2px solid #0f0;
+            border-radius: 5px;
+            width: 90%;
+            max-width: 900px;
+            height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 0 40px rgba(0, 255, 0, 0.6);
+            position: relative;
+            z-index: 1;
+            background-image: linear-gradient(rgba(0, 255, 0, 0.02) 1px, transparent 1px);
+            background-size: 100% 2px;
+        }
+        #output {
+            margin-bottom: 2rem;
+        }
+        #input-area {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        input, button {
+            background-color: #1a1a1a;
+            color: #0f0;
+            border: 1px solid #0f0;
+            padding: 0.8rem;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            flex: 1;
+            min-width: 120px;
+        }
+        button {
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0f0;
+            color: #000;
+        }
+        .progress-bar {
+            width: 100%;
+            background-color: #333;
+            height: 1.5rem;
+            margin-top: 1rem;
+            border: 1px solid #0f0;
+        }
+        .progress {
+            width: 0;
+            height: 100%;
+            background-color: #0f0;
+            transition: width 2s;
+        }
+        .disclaimer {
+            color: #f00;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 0.5rem;
+            border: 1px solid #f00;
+        }
+        .credential-box {
+            background-color: #1a1a1a;
+            padding: 1rem;
+            border: 1px solid #0f0;
+            margin-top: 1rem;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+        }
+        .login-screen {
+            background-color: #000;
+            border: 2px solid #0f0;
+            padding: 1rem;
+            margin-top: 1rem;
+            text-align: center;
+        }
+        .login-screen svg {
+            width: 6rem;
+            margin-bottom: 0.5rem;
+        }
+        .typing {
+            animation: typing 0.5s steps(40, end);
+        }
+        .blinking {
+            animation: blink 1s step-end infinite;
+        }
+        .glitch {
+            animation: glitch 0.3s infinite;
+        }
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(2px, -2px); }
+            60% { transform: translate(-2px, -2px); }
+            80% { transform: translate(2px, 2px); }
+            100% { transform: translate(0); }
+        }
+        .network-animation {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 8rem;
+            height: 8rem;
+        }
+        .circuit-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0.1;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        .command-prompt {
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        .command-prompt input {
+            flex-grow: 1;
+        }
+        /* Mobile Responsiveness */
+        @media (max-width: 600px) {
+            #terminal {
+                width: 95%;
+                height: 95vh;
+                padding: 3vw;
+            }
+            input, button {
+                font-size: 0.9rem;
+                padding: 0.6rem;
+            }
+            .disclaimer {
+                font-size: 0.7rem;
+            }
+            .login-screen svg {
+                width: 4rem;
+            }
+            .network-animation {
+                width: 5rem;
+                height: 5rem;
+            }
+            #input-area {
+                flex-direction: column;
+            }
+            .credential-box, .login-screen {
+                font-size: 0.9rem;
+            }
+            .progress-bar {
+                height: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="digital-rain"></canvas>
+    <div id="terminal">
+        <!-- Circuit Background SVG -->
+        <svg class="circuit-bg" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <path d="M0,50 H20 L30,30 H50 L60,70 H80 L90,20 H100" stroke="#0f0" stroke-width="0.5" fill="none" />
+            <path d="M0,70 H30 L40,50 H60 L70,80 H100" stroke="#0f0" stroke-width="0.5" fill="none" />
+        </svg>
+        <!-- Network Animation SVG -->
+        <svg class="network-animation" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="10" fill="#0f0">
+                <animateTransform attributeName="transform" type="rotate" from="0 50 50" to="360 50 50" dur="5s" repeatCount="indefinite" />
+            </circle>
+            <circle cx="20" cy="20" r="5" fill="#0f0">
+                <animate attributeName="r" from="5" to="8" dur="2s" repeatCount="indefinite" />
+            </circle>
+            <circle cx="80" cy="80" r="5" fill="#0f0">
+                <animate attributeName="r" from="5" to="8" dur="2s" repeatCount="indefinite" />
+            </circle>
+            <circle cx="20" cy="80" r="5" fill="#0f0">
+                <animate attributeName="r" from="5" to="8" dur="2s" repeatCount="indefinite" />
+            </circle>
+            <path d="M50,50 L20,20 M50,50 L80,80 M50,50 L20,80" stroke="#0f0" stroke-width="1">
+                <animate attributeName="opacity" from="1" to="0.3" dur="1s" repeatCount="indefinite" />
+            </path>
+        </svg>
+        <div class="disclaimer">
+            **Educational Simulator Only**<br>
+            This is a fictional interface for learning purposes. It does not hack or access any real systems, including Instagram or Gmail.<br>
+            All displayed credentials, including Gmail addresses, are randomly generated and fake. The term "[REAL]" is for simulation effect only.
+        </div>
+        <div id="output"></div>
+        <div id="input-area">
+            <input type="text" id="username" placeholder="Enter Instagram Username">
+            <input type="text" id="server" placeholder="Target Server (e.g., instagram.com)">
+            <button onclick="startHack()">Start Hack</button>
+        </div>
+        <div class="command-prompt">
+            <span>$</span>
+            <input type="text" id="command" placeholder="Enter command (e.g., scan ports)">
+            <button onclick="runCommand()">Run</button>
+        </div>
+    </div>
+
+    <script>
+        // Digital Rain Effect
+        const canvas = document.getElementById('digital-rain');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()日本語';
+        const fontSize = window.innerWidth < 600 ? 10 : 14;
+        const columns = Math.floor(canvas.width / fontSize);
+        const drops = [];
+
+        for (let x = 0; x < columns; x++) {
+            drops[x] = 1;
+        }
+
+        function draw() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#0f0';
+            ctx.font = `${fontSize}px monospace`;
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = chars.charAt(Math.floor(Math.random() * chars.length));
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        setInterval(draw, 33);
+
+        // Simulator Logic
+        const output = document.getElementById('output');
+        const usernameInput = document.getElementById('username');
+        const serverInput = document.getElementById('server');
+        const commandInput = document.getElementById('command');
+
+        function addOutput(text, className = '') {
+            const line = document.createElement('div');
+            line.textContent = text;
+            if (className) line.className = className;
+            output.appendChild(line);
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function createProgressBar() {
+            const bar = document.createElement('div');
+            bar.className = 'progress-bar';
+            const progress = document.createElement('div');
+            progress.className = 'progress';
+            bar.appendChild(progress);
+            output.appendChild(bar);
+            return progress;
+        }
+
+        function generateFakeCredentials(username) {
+            const randomPassword = Math.random().toString(36).slice(2, 8) + '@' + Math.floor(Math.random() * 1000);
+            const randomEmail = `${username}${Math.floor(Math.random() * 100)}@gmail.com`;
+            const sessionId = Math.random().toString(16).slice(2, 10).toUpperCase();
+            return { username: username, password: randomPassword, email: randomEmail, sessionId: sessionId };
+        }
+
+        async function simulateHack(username, server) {
+            addOutput(`[INIT] Starting hack simulation for ${username} on ${server}...`, 'typing');
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            addOutput(`[SCAN] Performing network scan... [SIMULATED]`, 'blinking');
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            addOutput(`[INFO] Found target IP: 192.168.1.${Math.floor(Math.random() * 255)} [FAKE]`);
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            addOutput(`[PORT] Scanning open ports: 80, 443, 8080... [REAL]`);
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            addOutput(`[SEC] Attempting brute-force authentication... [REAL]`, 'glitch');
+            const progress = createProgressBar();
+            let width = 0;
+            const interval = setInterval(() => {
+                width += 5;
+                progress.style.width = `${width}%`;
+                if (width >= 100) clearInterval(interval);
+            }, 100);
+            await new Promise(resolve => setTimeout(resolve, 2200));
+            addOutput(`[SQL] Injecting payload: ' OR '1'='1... [FICTIONAL]`);
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            addOutput(`[CRACK] Decrypting session token... [REAL]`, 'glitch');
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            const credentials = generateFakeCredentials(username);
+            addOutput(`[SUCCESS] Credentials retrieved:`);
+            const credBox = document.createElement('div');
+            credBox.className = 'credential-box';
+            credBox.innerHTML = `Username: ${credentials.username}<br>Password: ${credentials.password}<br>Email: ${credentials.email}<br>Session ID: ${credentials.sessionId}`;
+            output.appendChild(credBox);
+            addOutput(`[NOTICE] Displaying simulated Instagram login screen...`);
+            const loginScreen = document.createElement('div');
+            loginScreen.className = 'login-screen';
+            loginScreen.innerHTML = `
+                <svg viewBox="0 0 24 24" width="100" height="100">
+                    <path fill="#0f0" d="M12 2.8c-5.3 0-9.7 4.3-9.7 9.7s4.3 9.7 9.7 9.7 9.7-4.3 9.7-9.7S17.3 2.8 12 2.8zm0 2.3c1.8 0 3.3 1.5 3.3 3.3s-1.5 3.3-3.3 3.3-3.3-1.5-3.3-3.3 1.5-3.3 3.3-3.3zm0 14.6c-2.7 0-5.1-1.1-6.8-2.9.1-2 1.7-3.7 3.7-4.1.4-.1.8-.1 1.2-.1s.8 0 1.2.1c2 .4 3.6 2.1 3.7 4.1-1.7 1.8-4.1 2.9-6.8 2.9z"/>
+                </svg>
+                <div>Username: ${credentials.username}</div>
+                <div>Password: ${credentials.password}</div>
+                <div>Email: ${credentials.email}</div>
+            `;
+            output.appendChild(loginScreen);
+            addOutput(`[WARNING] This is a simulation for educational purposes only.`);
+            addOutput(`[INFO] All data shown is randomly generated and not real.`);
+        }
+
+        function startHack() {
+            const username = usernameInput.value.trim();
+            const server = serverInput.value.trim() || 'instagram.com';
+            if (!username) {
+                addOutput('[ERROR] Please enter a username.');
+                return;
+            }
+            output.innerHTML = '';
+            simulateHack(username, server);
+        }
+
+        function runCommand() {
+            const command = commandInput.value.trim().toLowerCase();
+            if (!command) {
+                addOutput('[ERROR] Please enter a command.');
+                return;
+            }
+            commandInput.value = '';
+            addOutput(`$ ${command}`);
+            if (command.includes('scan ports')) {
+                addOutput('[PORT] Scanning ports: 22, 80, 443, 8080... [FAKE]');
+                addOutput('[RESULT] Open ports: 80, 443 [SIMULATED]');
+            } else if (command.includes('brute force')) {
+                addOutput('[BRUTE] Initiating brute-force attack... [FICTIONAL]');
+                addOutput('[PROGRESS] Trying passwords: password123, qwerty... [FAKE]');
+            } else if (command.includes('help')) {
+                addOutput('[HELP] Available commands: scan ports, brute force, help');
+            } else {
+                addOutput('[ERROR] Unknown command. Type "help" for available commands.');
+            }
+        }
+
+        // Initial message
+        addOutput('Welcome to the Instagram Hacking Simulator (Educational)');
+        addOutput('This tool demonstrates responsive UI design and hacking simulation.');
+        addOutput('Enter a username and server, then click "Start Hack" to begin.');
+        addOutput('Use the command prompt for additional simulated actions.');
+    </script>
+</body>
+</html>
